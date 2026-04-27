@@ -1,1 +1,1478 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cambie — Technical Advisory for Financial Infrastructure</title><meta name="description" content="Cambie is a technical advisory firm working with institutions, trading firms, and founders building the infrastructure of modern capital markets."><script>!function(){var e=localStorage.getItem("cambie-theme")||(window.matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",e)}()</script><meta property="og:type" content="website"><meta property="og:url" content="https://cambie.xyz"><meta property="og:site_name" content="Cambie"><meta property="og:title" content="Cambie — Technical Advisory for Financial Infrastructure"><meta property="og:description" content="Architecture review, trading infrastructure, and fractional CTO services for institutions and founders building capital markets systems."><meta property="og:image" content="https://cambie.xyz/og.jpg"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Cambie — Technical Advisory"><meta name="twitter:description" content="Technical advisory for financial infrastructure. Architecture review, trading systems, fractional CTO."><meta name="twitter:image" content="https://cambie.xyz/og.jpg"><link rel="canonical" href="https://cambie.xyz"><link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='5' fill='%23b07535'/><text x='16' y='23' text-anchor='middle' font-family='Georgia,serif' font-size='21' font-weight='700' fill='white'>C</text></svg>"><noscript><style>.fade-in{opacity:1!important;transform:none!important}</style></noscript><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"><style>*,::after,::before{box-sizing:border-box;margin:0;padding:0}:root{--cream:#f4efe8;--cream-2:#ede8e0;--white:#faf9f7;--navy:#0c1b2e;--navy-2:#132437;--text:#1c1c26;--text-muted:#6a6a78;--text-dim:#9898a4;--text-light:#e6e0d8;--text-light-muted:rgba(230,224,216,0.55);--bronze:#b07535;--bronze-light:#c9924e;--border:rgba(28,28,38,0.1);--border-md:rgba(28,28,38,0.16);--border-dark:rgba(230,224,216,0.12);--nav-scrolled-bg:rgba(244,239,232,0.94);--mobile-menu-bg:#f4efe8;--pillar-hover:#f4efe8;--form-bg:#faf9f7}[data-theme=dark]{--cream:#161310;--cream-2:#1e1a16;--white:#1c1814;--navy:#0d1520;--navy-2:#132030;--text:#e4dbd0;--text-muted:#9c9188;--text-dim:#6e6560;--text-light:#e4dbd0;--text-light-muted:rgba(228,219,208,0.5);--bronze:#c89848;--bronze-light:#d9ac62;--border:rgba(228,219,208,0.09);--border-md:rgba(228,219,208,0.15);--border-dark:rgba(228,219,208,0.12);--nav-scrolled-bg:rgba(22,19,16,0.94);--mobile-menu-bg:#161310;--pillar-hover:#231f1b;--form-bg:#231f1b}html{scroll-behavior:smooth}body{background:var(--cream);color:var(--text);font-family:Inter,sans-serif;font-size:16px;line-height:1.65;overflow-x:hidden;transition:background .3s ease,color .3s ease}::selection{background:var(--bronze);color:#fff}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--cream)}::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:3px}nav{position:fixed;top:0;left:0;right:0;z-index:100;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 3rem;transition:background .4s ease,border-bottom .4s ease}nav.scrolled{background:var(--nav-scrolled-bg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}.nav-logo{text-decoration:none;color:var(--text);display:flex;flex-direction:column;line-height:1.1}.nav-logo .wordmark{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;letter-spacing:.01em}.nav-logo .tagline{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);font-weight:500}.nav-right{display:flex;align-items:center;gap:.75rem}.nav-links{display:flex;align-items:center;gap:2.25rem;list-style:none}.nav-links a{color:var(--text-muted);text-decoration:none;font-size:.84rem;font-weight:500;letter-spacing:.01em;transition:color .2s;position:relative}.nav-links a::after{content:'';position:absolute;left:0;bottom:-3px;width:0;height:1px;background:var(--bronze);transition:width .25s ease}.nav-links a:hover{color:var(--text)}.nav-links a:hover::after{width:100%}.nav-cta{padding:.5rem 1.25rem;border:1px solid var(--border-md);border-radius:3px;color:var(--text)!important;font-weight:500!important;font-size:.84rem!important;transition:border-color .2s,background .2s!important}.nav-cta::after{display:none!important}.nav-cta:hover{border-color:var(--bronze)!important;background:rgba(176,117,53,.06)!important;color:var(--text)!important}.theme-toggle{width:34px;height:34px;border-radius:50%;border:1px solid var(--border-md);background:0 0;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:color .2s,border-color .2s,background .2s;flex-shrink:0}.theme-toggle:hover{color:var(--text);border-color:var(--bronze)}.theme-toggle svg{width:15px;height:15px;pointer-events:none}.icon-sun{display:none}.icon-moon{display:block}[data-theme=dark] .icon-sun{display:block}[data-theme=dark] .icon-moon{display:none}.nav-mobile-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;margin-left:.5rem}.nav-mobile-toggle span{display:block;width:22px;height:1.5px;background:var(--text);border-radius:2px;transition:all .3s}#hero{padding:10rem 3rem 7rem;max-width:1080px;margin:0 auto;position:relative}.hero-overline{font-size:.72rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--bronze);margin-bottom:1.75rem;display:flex;align-items:center;gap:.75rem}.hero-overline::before{content:'';display:block;width:28px;height:1px;background:var(--bronze)}#hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.6rem, 5.5vw, 4.2rem);font-weight:700;line-height:1.12;letter-spacing:-.02em;color:var(--text);max-width:820px;margin-bottom:2.5rem}#hero h1 em{font-style:italic;color:var(--bronze)}.hero-rule{width:48px;height:1px;background:var(--border-md);margin-bottom:2rem}.hero-body{max-width:540px;color:var(--text-muted);font-size:1.05rem;line-height:1.75;margin-bottom:3rem;font-weight:300}.hero-actions{display:flex;align-items:center;gap:2rem;flex-wrap:wrap}.btn-primary{padding:.8rem 2rem;background:var(--navy);color:var(--text-light);border:none;border-radius:3px;font-family:Inter,sans-serif;font-size:.875rem;font-weight:500;letter-spacing:.02em;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;transition:background .2s,transform .2s}.btn-primary:hover{background:var(--navy-2);transform:translateY(-1px)}[data-theme=dark] .btn-primary{background:#1e2d42;color:var(--text-light)}[data-theme=dark] .btn-primary:hover{background:#243548}.btn-text{font-size:.875rem;font-weight:500;color:var(--text-muted);text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;transition:color .2s;border-bottom:1px solid transparent;padding-bottom:1px}.btn-text:hover{color:var(--text);border-bottom-color:var(--text)}.hero-footnote{margin-top:5rem;padding-top:2.5rem;border-top:1px solid var(--border);display:flex;gap:4rem;flex-wrap:wrap}.fn-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.16em;color:var(--text-dim);font-weight:600;margin-bottom:.3rem}.fn-value{font-size:.9rem;color:var(--text-muted);font-weight:400}.section-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.2em;color:var(--text-dim);font-weight:600;margin-bottom:2rem}#services{background:var(--white);padding:6rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}.services-container{max-width:1080px;margin:0 auto;padding:0 3rem}.services-header{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:end;margin-bottom:4.5rem}.services-header h2{font-family:'Playfair Display',serif;font-size:clamp(1.9rem, 3vw, 2.6rem);font-weight:600;line-height:1.2;letter-spacing:-.02em}.services-header p{color:var(--text-muted);font-size:.95rem;line-height:1.75;font-weight:300}.services-table{border-top:1px solid var(--border)}.service-row{display:grid;grid-template-columns:48px 1fr 1fr auto;gap:2rem;align-items:start;padding:2.5rem 0;border-bottom:1px solid var(--border);transition:background .2s,padding .2s,margin .2s}.service-row:hover{background:rgba(176,117,53,.04);margin:0 -1.5rem;padding-left:1.5rem;padding-right:1.5rem}[data-theme=dark] .service-row:hover{background:rgba(200,152,72,.06)}.svc-num{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:400;color:var(--text-dim);padding-top:3px}.svc-title{font-size:1rem;font-weight:600;margin-bottom:.5rem;letter-spacing:-.01em}.svc-desc{font-size:.875rem;color:var(--text-muted);line-height:1.65;font-weight:300}.svc-includes{list-style:none;display:flex;flex-direction:column;gap:.4rem}.svc-includes li{font-size:.82rem;color:var(--text-muted);padding-left:.9rem;position:relative;line-height:1.5}.svc-includes li::before{content:'—';position:absolute;left:0;color:var(--text-dim);font-size:.7rem;top:2px}.svc-pricing{text-align:right;white-space:nowrap}.svc-price-main{font-size:.82rem;font-weight:600;color:var(--text);margin-bottom:.2rem}.svc-price-sub{font-size:.75rem;color:var(--text-dim)}#clients{padding:6rem 0;background:var(--cream)}.clients-container{max-width:1080px;margin:0 auto;padding:0 3rem}.clients-inner{display:grid;grid-template-columns:340px 1fr;gap:6rem;align-items:start}.clients-left h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem, 2.8vw, 2.4rem);font-weight:600;line-height:1.22;letter-spacing:-.02em;margin-bottom:1.25rem}.clients-left p{font-size:.9rem;color:var(--text-muted);line-height:1.75;font-weight:300;margin-bottom:1.5rem}.pullquote{font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:var(--bronze);line-height:1.6;padding-left:1.25rem;border-left:2px solid var(--bronze);margin-top:2rem}.client-list{display:flex;flex-direction:column}.client-item{display:grid;grid-template-columns:36px 1fr;gap:1rem;align-items:start;padding:1.75rem 0;border-bottom:1px solid var(--border)}.client-item:first-child{border-top:1px solid var(--border)}.ci-num{font-size:.7rem;color:var(--text-dim);font-weight:500;letter-spacing:.04em;padding-top:4px}.ci-body h4{font-size:.92rem;font-weight:600;margin-bottom:.3rem;letter-spacing:-.01em}.ci-body p{font-size:.83rem;color:var(--text-muted);line-height:1.6;font-weight:300}#approach{background:var(--navy);color:var(--text-light);padding:6.5rem 0}.approach-container{max-width:1080px;margin:0 auto;padding:0 3rem}.approach-header{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:end;margin-bottom:5rem;padding-bottom:3.5rem;border-bottom:1px solid var(--border-dark)}.approach-header h2{font-family:'Playfair Display',serif;font-size:clamp(1.9rem, 3vw, 2.6rem);font-weight:600;line-height:1.2;letter-spacing:-.02em;color:var(--text-light)}.approach-header p{font-size:.9rem;color:var(--text-light-muted);line-height:1.75;font-weight:300}.approach-section-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.2em;color:rgba(230,224,216,.3);font-weight:600;margin-bottom:2rem}.approach-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:3rem;margin-bottom:5rem}.approach-step{padding-top:2rem;border-top:1px solid var(--border-dark)}.as-num{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:400;color:var(--bronze-light);opacity:.55;margin-bottom:1.25rem;line-height:1}.approach-step h3{font-size:1rem;font-weight:600;color:var(--text-light);margin-bottom:.6rem;letter-spacing:-.01em}.approach-step p{font-size:.85rem;color:var(--text-light-muted);line-height:1.7;font-weight:300}.as-meta{margin-top:1.25rem;font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(201,146,78,.65);font-weight:500}.capital-note{padding:2.5rem 3rem;border:1px solid var(--border-dark);border-radius:4px;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}.capital-note h3{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:600;color:var(--text-light);line-height:1.35;margin-bottom:.75rem}.capital-note p{font-size:.85rem;color:var(--text-light-muted);line-height:1.75;font-weight:300}.capital-signals{display:flex;flex-wrap:wrap;gap:.75rem;padding-top:.5rem}.capital-signal{font-size:.78rem;color:var(--text-light-muted);padding:.4rem .85rem;border:1px solid var(--border-dark);border-radius:2px;font-weight:400;letter-spacing:.02em}#about{background:var(--white);padding:6.5rem 0;border-top:1px solid var(--border)}.about-container{max-width:1080px;margin:0 auto;padding:0 3rem}.about-inner{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start}.about-text h2{font-family:'Playfair Display',serif;font-size:clamp(1.9rem, 3vw, 2.5rem);font-weight:600;line-height:1.2;letter-spacing:-.02em;margin-bottom:2rem}.about-text p{font-size:.9rem;color:var(--text-muted);line-height:1.8;font-weight:300;margin-bottom:1.1rem}.about-text p:last-of-type{margin-bottom:0}.about-text strong{color:var(--text);font-weight:600}.about-pillars{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:4px;overflow:hidden}.pillar-row{display:grid;grid-template-columns:36px 1fr;gap:1.25rem;align-items:start;padding:1.5rem 1.75rem;border-bottom:1px solid var(--border);background:var(--white);transition:background .2s}.pillar-row:last-child{border-bottom:none}.pillar-row:hover{background:var(--pillar-hover)}.pillar-n{font-size:.7rem;letter-spacing:.06em;color:var(--text-dim);padding-top:4px;font-weight:500}.pillar-body h4{font-size:.875rem;font-weight:600;margin-bottom:.3rem;letter-spacing:-.01em}.pillar-body p{font-size:.8rem;color:var(--text-muted);line-height:1.55;font-weight:300}#contact{padding:6.5rem 0;background:var(--cream);border-top:1px solid var(--border)}.contact-container{max-width:1080px;margin:0 auto;padding:0 3rem;display:grid;grid-template-columns:380px 1fr;gap:6rem}.contact-left h2{font-family:'Playfair Display',serif;font-size:clamp(1.9rem, 2.8vw, 2.5rem);font-weight:600;line-height:1.2;letter-spacing:-.02em;margin-bottom:1.25rem}.contact-left p{font-size:.88rem;color:var(--text-muted);line-height:1.75;font-weight:300;margin-bottom:2rem}.contact-detail{font-size:.82rem;color:var(--text-muted);display:flex;flex-direction:column;gap:.4rem}.contact-detail a{color:var(--text);text-decoration:none;font-weight:500;transition:color .2s}.contact-detail a:hover{color:var(--bronze)}.contact-detail span{font-size:.7rem;text-transform:uppercase;letter-spacing:.14em;color:var(--text-dim);font-weight:600}.contact-form{display:flex;flex-direction:column;gap:1.25rem}.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}.form-group{display:flex;flex-direction:column;gap:.45rem}.form-group label{font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}.form-group input,.form-group select,.form-group textarea{background:var(--form-bg);border:1px solid var(--border-md);border-radius:3px;padding:.7rem .9rem;color:var(--text);font-family:Inter,sans-serif;font-size:.875rem;font-weight:400;outline:0;width:100%;transition:border-color .2s,background .2s;-webkit-appearance:none}.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--bronze)}.form-group select{cursor:pointer}.form-group textarea{resize:vertical;min-height:90px}.form-group input::placeholder,.form-group textarea::placeholder{color:var(--text-dim);font-weight:300}.form-submit{margin-top:.25rem}.form-submit .btn-primary{width:100%;justify-content:center}.form-status{display:none;padding:.8rem 1rem;border-radius:3px;font-size:.85rem;text-align:center;margin-top:.5rem}.form-status.success{background:rgba(60,120,60,.08);border:1px solid rgba(60,120,60,.2);color:#2e7d32}[data-theme=dark] .form-status.success{color:#66bb6a}.form-status.error{background:rgba(180,60,60,.07);border:1px solid rgba(180,60,60,.2);color:#b71c1c}[data-theme=dark] .form-status.error{color:#ef9a9a}footer{background:var(--navy);color:var(--text-light);padding:2.5rem 3rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}.footer-wordmark{font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;letter-spacing:.01em}footer p{font-size:.78rem;color:var(--text-light-muted)}.fade-in{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}.fade-in.visible{opacity:1;transform:none}.fade-in.d1{transition-delay:0.1s}.fade-in.d2{transition-delay:0.2s}.fade-in.d3{transition-delay:0.3s}@media (max-width:900px){nav{padding:0 1.5rem}.nav-links{display:none}.nav-mobile-toggle{display:flex}.nav-links.open{display:flex;flex-direction:column;position:fixed;top:68px;left:0;right:0;background:var(--mobile-menu-bg);border-bottom:1px solid var(--border);padding:1.5rem 2rem;gap:1.25rem}.nav-cta{display:none}#hero{padding:8rem 1.5rem 5rem}.hero-footnote{gap:2rem}.about-container,.approach-container,.clients-container,.contact-container,.services-container{padding:0 1.5rem}.services-header{grid-template-columns:1fr;gap:1.5rem}.service-row{grid-template-columns:36px 1fr;gap:1rem}.svc-pricing{display:none}.svc-includes{display:none}.clients-inner{grid-template-columns:1fr;gap:2.5rem}.approach-header{grid-template-columns:1fr;gap:1.5rem}.approach-steps{grid-template-columns:1fr;gap:2.5rem}.capital-note{grid-template-columns:1fr;gap:1.5rem}.about-inner{grid-template-columns:1fr;gap:3rem}.contact-container{grid-template-columns:1fr;gap:3rem}.form-row-2{grid-template-columns:1fr}footer{flex-direction:column;text-align:center;padding:2rem 1.5rem}}</style></head><body><nav id="navbar"><a href="#hero" class="nav-logo"><span class="wordmark">Cambie</span> <span class="tagline">Technical Advisory</span></a><div class="nav-right"><ul class="nav-links" id="navLinks"><li><a href="#services">Services</a></li><li><a href="#clients">Who We Work With</a></li><li><a href="#approach">Approach</a></li><li><a href="#about">About</a></li><li><a href="#contact" class="nav-cta">Get in Touch</a></li></ul><button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button><div class="nav-mobile-toggle" id="mobileToggle" aria-label="Open menu"><span></span><span></span><span></span></div></div></nav><section id="hero"><div class="hero-overline fade-in">Technical Advisory · Capital Markets</div><h1 class="fade-in d1">Where rigorous engineering<br>meets <em>financial judgment</em></h1><div class="hero-rule fade-in d1"></div><p class="hero-body fade-in d2">Cambie advises institutions, trading firms, and founders on the design, architecture, and operational integrity of capital markets systems — where technical precision and financial logic must work together.</p><div class="hero-actions fade-in d2"><a href="#services" class="btn-primary">Our Services <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> </a><a href="https://calendly.com/cambie-info/30min" target="_blank" rel="noopener noreferrer" class="btn-text">Schedule a conversation <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div><div class="hero-footnote fade-in d3"><div class="fn-item"><div class="fn-label">Engagements</div><div class="fn-value">Fixed-fee, project, or retainer</div></div><div class="fn-item"><div class="fn-label">Diagnostic</div><div class="fn-value">One-week turnaround</div></div><div class="fn-item"><div class="fn-label">Availability</div><div class="fn-value">Select new mandates each quarter</div></div></div></section><section id="services"><div class="services-container"><div class="services-header fade-in"><div><div class="section-label">Services</div><h2>Three engagement<br>models</h2></div><p>We work on a small number of mandates at a time — each structured for clarity and a defined outcome. No retainers that drift, no open-ended scope. We design the engagement before we begin.</p></div><div class="services-table"><div class="service-row fade-in"><div class="svc-num">I</div><div><div class="svc-title">Technical Architecture &amp; Risk Review</div><div class="svc-desc">A structured review of your system design, financial logic, and operational risk — delivered as a written report with a prioritised action plan. Useful before an audit, a fundraise, or a major launch.</div></div><ul class="svc-includes"><li>System architecture and component analysis</li><li>Financial logic and pricing model review</li><li>Derivatives, risk engine, and liquidation mechanics</li><li>Operational security and attack surface assessment</li><li>Prioritised remediation roadmap</li></ul><div class="svc-pricing"><div class="svc-price-main">From $10,000</div><div class="svc-price-sub">Fixed fee</div></div></div><div class="service-row fade-in d1"><div class="svc-num">II</div><div><div class="svc-title">Trading &amp; Quantitative Infrastructure</div><div class="svc-desc">Design, review, or buildout of the data pipelines, execution systems, and risk monitoring infrastructure that serious trading operations require to operate reliably at scale.</div></div><ul class="svc-includes"><li>Market data ingestion and normalisation</li><li>Execution engine architecture and latency review</li><li>Backtesting and research pipeline buildout</li><li>Risk monitoring, dashboards, and alerting</li><li>Strategy deployment infrastructure</li></ul><div class="svc-pricing"><div class="svc-price-main">$15,000–$50,000</div><div class="svc-price-sub">Project or $8K–$20K/mo</div></div></div><div class="service-row fade-in d2"><div class="svc-num">III</div><div><div class="svc-title">Technical Advisory Retainer</div><div class="svc-desc">Ongoing CTO-level judgment for founders who need a senior technical co-pilot without a full-time hire. Architecture decisions, vendor selection, hiring, and security oversight on a retained, monthly basis.</div></div><ul class="svc-includes"><li>Weekly strategy and architecture sessions</li><li>Vendor, tooling, and auditor selection</li><li>Engineering team hiring and review</li><li>Roadmap and security oversight</li><li>Direct access between sessions</li></ul><div class="svc-pricing"><div class="svc-price-main">$5,000–$15,000</div><div class="svc-price-sub">Per month</div></div></div></div></div></section><section id="clients"><div class="clients-container"><div class="clients-inner"><div class="clients-left fade-in"><div class="section-label">Who We Work With</div><h2>The right fit is selective by design</h2><p>Our work is most effective where the stakes are real — a launch approaching, a fundraise in motion, or a system under growing production load.</p><p>We work across geographies and time zones, with clients in Southeast Asia, the Gulf, and internationally across a range of financial infrastructure.</p><div class="pullquote">"We don't audit a system from the outside and hand back a report. We think alongside your team."</div></div><div class="fade-in d1"><div class="client-list"><div class="client-item"><div class="ci-num">01</div><div class="ci-body"><h4>Early-stage fintech companies</h4><p>Seed to Series A teams building derivatives, lending, exchange, or structured product platforms who need deep technical judgment before their first major audit or fundraise.</p></div></div><div class="client-item"><div class="ci-num">02</div><div class="ci-body"><h4>Trading firms with capital but underdeveloped infrastructure</h4><p>Firms with strong strategies and deployment capital whose data, execution, or risk infrastructure has not kept pace with their growth.</p></div></div><div class="client-item"><div class="ci-num">03</div><div class="ci-body"><h4>Exchanges and liquidity providers</h4><p>Teams building pricing engines, market-making systems, or liquidation infrastructure that requires production-grade reliability and financial correctness.</p></div></div><div class="client-item"><div class="ci-num">04</div><div class="ci-body"><h4>Founders who need more than a development agency</h4><p>Venture-backed founders navigating complex architecture decisions, audit preparation, or scaling inflection points who need a technically senior co-pilot.</p></div></div><div class="client-item"><div class="ci-num">05</div><div class="ci-body"><h4>Institutions conducting technical diligence</h4><p>Financial institutions, fund managers, and specialist firms seeking external technical expertise on the systems they are evaluating, funding, or acquiring.</p></div></div></div></div></div></div></section><section id="approach"><div class="approach-container"><div class="approach-header fade-in"><div><div class="approach-section-label">Approach</div><h2>How we structure<br>our engagements</h2></div><p>We begin every relationship with a bounded, fixed-fee diagnostic. This gives both sides a clear view of the problem before committing to a longer engagement — and produces a useful deliverable in its own right.</p></div><div class="approach-steps"><div class="approach-step fade-in"><div class="as-num">01</div><h3>Diagnostic Review</h3><p>We assess your architecture, financial logic, and risk profile and return a written, prioritised action report. Concrete and specific — not generic observations.</p><div class="as-meta">Fixed fee · One week</div></div><div class="approach-step fade-in d1"><div class="as-num">02</div><h3>Embedded Engagement</h3><p>We work alongside your team to address the highest-priority issues — system redesign, risk engine correctness, compliance readiness, or infrastructure buildout.</p><div class="as-meta">Project-based · Two to eight weeks</div></div><div class="approach-step fade-in d2"><div class="as-num">03</div><h3>Ongoing Partnership</h3><p>Continued technical judgment, architecture guidance, and hiring support on a monthly basis. For select clients, we remain engaged well beyond the initial mandate.</p><div class="as-meta">Monthly retainer · Selective</div></div></div><div class="capital-note fade-in"><div><h3>When conviction is high, we invest our own capital</h3><p>In a small number of engagements, our advisory work produces the kind of first-hand technical conviction that leads us to co-invest from our own balance sheet. This is not a fund arrangement — we do not manage outside capital. We invest alongside clients on the same terms, independently and on a fully disclosed basis.</p></div><div class="capital-signals"><span class="capital-signal">Technical Advisory</span> <span class="capital-signal">Proprietary Capital</span> <span class="capital-signal">Aligned Interests</span> <span class="capital-signal">Full Disclosure</span></div></div></div></section><section id="about"><div class="about-container"><div class="about-inner"><div class="about-text fade-in"><div class="section-label">About</div><h2>Where protocol design<br>meets trading reality</h2><p>Most technical advisors come from a single discipline — either security auditing or production systems engineering. <strong>Cambie operates at the intersection</strong>: protocol-level correctness, adversarial security thinking, and real trading infrastructure experience.</p><p>This overlap — programmable financial contracts, market-making systems, risk engines, and execution infrastructure — is where the most expensive problems live, and where generalist agencies and traditional auditors both fall short.</p><p>We keep our client roster deliberately small. Each engagement informs the next, compounding into a proprietary understanding of how financial systems break, scale, and perform.</p><div style="margin-top:2.5rem"><a href="#contact" class="btn-primary" style="display:inline-flex">Start a conversation <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div></div><div class="fade-in d1"><div class="about-pillars"><div class="pillar-row"><div class="pillar-n">I</div><div class="pillar-body"><h4>Protocol Engineering</h4><p>Deep experience with programmable financial contracts, economic design, and audit-readiness across complex system architectures.</p></div></div><div class="pillar-row"><div class="pillar-n">II</div><div class="pillar-body"><h4>Trading Infrastructure</h4><p>Systems thinking from latency-sensitive execution environments: market data pipelines, execution engines, and the operational demands of live markets.</p></div></div><div class="pillar-row"><div class="pillar-n">III</div><div class="pillar-body"><h4>Financial Logic</h4><p>Derivatives pricing, funding mechanics, liquidation design, and risk parameters — the mathematics and edge cases that break systems under real market stress.</p></div></div><div class="pillar-row"><div class="pillar-n">IV</div><div class="pillar-body"><h4>Capital Markets Perspective</h4><p>Every system is evaluated through the dual frame of technical correctness and adversarial market reality — both matter equally, and most advisors only see one.</p></div></div></div></div></div></div></section><section id="contact"><div class="contact-container"><div class="contact-left fade-in"><div class="section-label">Contact</div><h2>Begin with a conversation</h2><p>We accept a small number of new engagements each quarter. Describe your situation and we will respond within one business day.</p><div class="contact-detail"><span>Direct</span> <a href="mailto:info@cambie.xyz">info@cambie.xyz</a></div><div style="margin-top:1.75rem" class="contact-detail"><span>Website</span> <a href="https://cambie.xyz">cambie.xyz</a></div></div><div class="fade-in d1"><form class="contact-form" id="contactForm" novalidate><div class="form-row-2"><div class="form-group"><label for="firstName">First Name</label> <input id="firstName" name="firstName" placeholder="Given name" required></div><div class="form-group"><label for="lastName">Last Name</label> <input id="lastName" name="lastName" placeholder="Surname" required></div></div><div class="form-group"><label for="email">Email</label> <input type="email" id="email" name="email" placeholder="your@organisation.com" required></div><div class="form-group"><label for="company">Organisation</label> <input id="company" name="company" placeholder="Firm or project name"></div><div class="form-group"><label for="engagement">Engagement Type</label> <select id="engagement" name="engagement" required><option value="" disabled="disabled" selected="selected">Select an engagement type</option><option value="architecture-review">Architecture &amp; Risk Review</option><option value="trading-infra">Trading &amp; Quantitative Infrastructure</option><option value="retainer">Technical Advisory Retainer</option><option value="other">Other / Not yet determined</option></select></div><div class="form-group"><label for="message">Describe your situation</label> <textarea id="message" name="message" placeholder="What are you building? What is the core challenge? Is there a timeline?" required></textarea></div><div class="form-submit"><button type="submit" class="btn-primary" id="submitBtn">Send Message <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div><div class="form-status" id="formStatus"></div></form></div></div></section><footer><span class="footer-wordmark">Cambie</span><p>Technical Advisory for Financial Infrastructure</p><p>&copy; 2026 Cambie Ventures &nbsp;·&nbsp; info@cambie.xyz</p></footer><script>const html=document.documentElement,themeToggle=document.getElementById("themeToggle");themeToggle.addEventListener("click",()=>{const e="dark"!==html.getAttribute("data-theme");html.setAttribute("data-theme",e?"dark":"light"),localStorage.setItem("cambie-theme",e?"dark":"light")}),window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",e=>{localStorage.getItem("cambie-theme")||html.setAttribute("data-theme",e.matches?"dark":"light")});const navbar=document.getElementById("navbar");window.addEventListener("scroll",()=>{navbar.classList.toggle("scrolled",window.scrollY>24)},{passive:!0});const toggle=document.getElementById("mobileToggle"),navLinks=document.getElementById("navLinks");toggle.addEventListener("click",()=>navLinks.classList.toggle("open")),navLinks.querySelectorAll("a").forEach(e=>{e.addEventListener("click",()=>navLinks.classList.remove("open"))}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",t=>{const n=document.querySelector(e.getAttribute("href"));if(!n)return;t.preventDefault();const o=n.getBoundingClientRect().top+window.scrollY-80;window.scrollTo({top:o,behavior:"smooth"})})});const fadeEls=document.querySelectorAll(".fade-in"),revealAll=()=>fadeEls.forEach(e=>e.classList.add("visible"));if("IntersectionObserver"in window){const e=new IntersectionObserver(t=>{t.forEach(t=>{t.isIntersecting&&(t.target.classList.add("visible"),e.unobserve(t.target))})},{threshold:0,rootMargin:"0px"});fadeEls.forEach(t=>e.observe(t)),setTimeout(revealAll,800)}else revealAll();const form=document.getElementById("contactForm"),formStatus=document.getElementById("formStatus"),submitBtn=document.getElementById("submitBtn");form.addEventListener("submit",async e=>{if(e.preventDefault(),!form.checkValidity())return void form.reportValidity();const t=submitBtn.innerHTML;submitBtn.textContent="Sending…",submitBtn.disabled=!0;try{const e=await fetch("https://formspree.io/f/xpqkgzqb",{method:"POST",headers:{Accept:"application/json"},body:new FormData(form)});if(!e.ok){const t=await e.json().catch(()=>({}));throw new Error(t.error||"Submission failed")}formStatus.textContent="Thank you — we will be in touch within one business day.",formStatus.className="form-status success",formStatus.style.display="block",form.reset()}catch{formStatus.textContent="Something went wrong. Please email info@cambie.xyz directly.",formStatus.className="form-status error",formStatus.style.display="block"}finally{submitBtn.innerHTML=t,submitBtn.disabled=!1}})</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cambie - Technical Advisory for Financial Infrastructure</title>
+  <meta name="description" content="Cambie is a technical advisory firm working with institutions, trading firms, and founders building the infrastructure of modern capital markets.">
+
+  <!-- Theme initialisation: runs before first paint to prevent flash of wrong theme -->
+  <script>
+    (function(){
+      var t=localStorage.getItem('cambie-theme')||(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+      document.documentElement.setAttribute('data-theme',t);
+    })();
+  </script>
+
+  <!-- Open Graph / Social -->
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://cambie.xyz">
+  <meta property="og:site_name"   content="Cambie">
+  <meta property="og:title"       content="Cambie - Technical Advisory for Financial Infrastructure">
+  <meta property="og:description" content="Architecture review, trading infrastructure, and fractional CTO services for institutions and founders building capital markets systems.">
+  <meta property="og:image"        content="https://cambie.xyz/og.jpg">
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="Cambie - Technical Advisory">
+  <meta name="twitter:description" content="Technical advisory for financial infrastructure. Architecture review, trading systems, fractional CTO.">
+  <meta name="twitter:image"       content="https://cambie.xyz/og.jpg">
+  <link rel="canonical" href="https://cambie.xyz">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='5' fill='%23b07535'/><text x='16' y='23' text-anchor='middle' font-family='Georgia,serif' font-size='21' font-weight='700' fill='white'>C</text></svg>">
+
+  <!-- No-JS fallback: reveal animated elements immediately if JS is disabled -->
+  <noscript><style>.fade-in{opacity:1!important;transform:none!important}</style></noscript>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ─── LIGHT THEME (default) ─── */
+    :root {
+      --cream:            #f4efe8;
+      --cream-2:          #ede8e0;
+      --white:            #faf9f7;
+      --navy:             #0c1b2e;
+      --navy-2:           #132437;
+      --text:             #1c1c26;
+      --text-muted:       #6a6a78;
+      --text-dim:         #9898a4;
+      --text-light:       #e6e0d8;
+      --text-light-muted: rgba(230,224,216,0.55);
+      --bronze:           #b07535;
+      --bronze-light:     #c9924e;
+      --border:           rgba(28,28,38,0.1);
+      --border-md:        rgba(28,28,38,0.16);
+      --border-dark:      rgba(230,224,216,0.12);
+      --nav-scrolled-bg:  rgba(244,239,232,0.94);
+      --mobile-menu-bg:   #f4efe8;
+      --pillar-hover:     #f4efe8;
+      --form-bg:          #faf9f7;
+    }
+
+    /* ─── DARK THEME ─── */
+    [data-theme="dark"] {
+      --cream:            #161310;
+      --cream-2:          #1e1a16;
+      --white:            #1c1814;
+      --navy:             #0d1520;
+      --navy-2:           #132030;
+      --text:             #e4dbd0;
+      --text-muted:       #9c9188;
+      --text-dim:         #6e6560;
+      --text-light:       #e4dbd0;
+      --text-light-muted: rgba(228,219,208,0.5);
+      --bronze:           #c89848;
+      --bronze-light:     #d9ac62;
+      --border:           rgba(228,219,208,0.09);
+      --border-md:        rgba(228,219,208,0.15);
+      --border-dark:      rgba(228,219,208,0.12);
+      --nav-scrolled-bg:  rgba(22,19,16,0.94);
+      --mobile-menu-bg:   #161310;
+      --pillar-hover:     #231f1b;
+      --form-bg:          #231f1b;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    ::selection { background: var(--bronze); color: #fff; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--cream); }
+    ::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 3px; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem;
+      transition: background 0.4s ease, border-bottom 0.4s ease;
+    }
+    nav.scrolled {
+      background: var(--nav-scrolled-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+    .nav-logo .wordmark {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+    .nav-logo .tagline {
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2.25rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.84rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: -3px;
+      width: 0; height: 1px;
+      background: var(--bronze);
+      transition: width 0.25s ease;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-cta {
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border-md);
+      border-radius: 3px;
+      color: var(--text) !important;
+      font-weight: 500 !important;
+      font-size: 0.84rem !important;
+      transition: border-color 0.2s, background 0.2s !important;
+    }
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover {
+      border-color: var(--bronze) !important;
+      background: rgba(176,117,53,0.06) !important;
+      color: var(--text) !important;
+    }
+
+    /* Theme toggle button */
+    .theme-toggle {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--border-md);
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      flex-shrink: 0;
+    }
+    .theme-toggle:hover {
+      color: var(--text);
+      border-color: var(--bronze);
+    }
+    .theme-toggle svg { width: 15px; height: 15px; pointer-events: none; }
+    .icon-sun { display: none; }
+    .icon-moon { display: block; }
+    [data-theme="dark"] .icon-sun { display: block; }
+    [data-theme="dark"] .icon-moon { display: none; }
+
+    .nav-mobile-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      margin-left: 0.5rem;
+    }
+    .nav-mobile-toggle span {
+      display: block; width: 22px; height: 1.5px;
+      background: var(--text); border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    /* ─── HERO ─── */
+    #hero {
+      padding: 10rem 3rem 7rem;
+      max-width: 1080px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .hero-overline {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--bronze);
+      margin-bottom: 1.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .hero-overline::before {
+      content: '';
+      display: block; width: 28px; height: 1px;
+      background: var(--bronze);
+    }
+
+    #hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      max-width: 820px;
+      margin-bottom: 2.5rem;
+    }
+    #hero h1 em { font-style: italic; color: var(--bronze); }
+
+    .hero-rule {
+      width: 48px; height: 1px;
+      background: var(--border-md);
+      margin-bottom: 2rem;
+    }
+
+    .hero-body {
+      max-width: 540px;
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      line-height: 1.75;
+      margin-bottom: 3rem;
+      font-weight: 300;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      padding: 0.8rem 2rem;
+      background: var(--navy);
+      color: var(--text-light);
+      border: none;
+      border-radius: 3px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { background: var(--navy-2); transform: translateY(-1px); }
+    [data-theme="dark"] .btn-primary {
+      background: #1e2d42;
+      color: var(--text-light);
+    }
+    [data-theme="dark"] .btn-primary:hover { background: #243548; }
+
+    .btn-text {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: color 0.2s;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 1px;
+    }
+    .btn-text:hover { color: var(--text); border-bottom-color: var(--text); }
+
+    .hero-footnote {
+      margin-top: 5rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 4rem;
+      flex-wrap: wrap;
+    }
+    .fn-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-dim);
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .fn-value {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* ─── SHARED ─── */
+    .section-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      font-weight: 600;
+      margin-bottom: 2rem;
+    }
+
+    /* ─── SERVICES ─── */
+    #services {
+      background: var(--white);
+      padding: 6rem 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .services-container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 3rem;
+    }
+    .services-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: end;
+      margin-bottom: 4.5rem;
+    }
+    .services-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.9rem, 3vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+    .services-header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.75;
+      font-weight: 300;
+    }
+
+    .services-table { border-top: 1px solid var(--border); }
+    .service-row {
+      display: grid;
+      grid-template-columns: 48px 1fr 1fr auto;
+      gap: 2rem;
+      align-items: start;
+      padding: 2.5rem 0;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s, padding 0.2s, margin 0.2s;
+    }
+    .service-row:hover {
+      background: rgba(176,117,53,0.04);
+      margin: 0 -1.5rem;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+    [data-theme="dark"] .service-row:hover {
+      background: rgba(200,152,72,0.06);
+    }
+
+    .svc-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--text-dim);
+      padding-top: 3px;
+    }
+    .svc-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+    .svc-desc {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      font-weight: 300;
+    }
+    .svc-includes {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .svc-includes li {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      padding-left: 0.9rem;
+      position: relative;
+      line-height: 1.5;
+    }
+    .svc-includes li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--text-dim);
+      font-size: 0.7rem;
+      top: 2px;
+    }
+    .svc-pricing { text-align: right; white-space: nowrap; }
+    .svc-price-main {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.2rem;
+    }
+    .svc-price-sub { font-size: 0.75rem; color: var(--text-dim); }
+
+    /* ─── WHO WE WORK WITH ─── */
+    #clients {
+      padding: 6rem 0;
+      background: var(--cream);
+    }
+    .clients-container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 3rem;
+    }
+    .clients-inner {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 6rem;
+      align-items: start;
+    }
+    .clients-left h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+      font-weight: 600;
+      line-height: 1.22;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+    }
+    .clients-left p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      font-weight: 300;
+      margin-bottom: 1.5rem;
+    }
+    .pullquote {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--bronze);
+      line-height: 1.6;
+      padding-left: 1.25rem;
+      border-left: 2px solid var(--bronze);
+      margin-top: 2rem;
+    }
+
+    .client-list { display: flex; flex-direction: column; }
+    .client-item {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 1rem;
+      align-items: start;
+      padding: 1.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .client-item:first-child { border-top: 1px solid var(--border); }
+    .ci-num {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      padding-top: 4px;
+    }
+    .ci-body h4 {
+      font-size: 0.92rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      letter-spacing: -0.01em;
+    }
+    .ci-body p {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-weight: 300;
+    }
+
+    /* ─── APPROACH (dark section) ─── */
+    #approach {
+      background: var(--navy);
+      color: var(--text-light);
+      padding: 6.5rem 0;
+    }
+    .approach-container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 3rem;
+    }
+    .approach-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: end;
+      margin-bottom: 5rem;
+      padding-bottom: 3.5rem;
+      border-bottom: 1px solid var(--border-dark);
+    }
+    .approach-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.9rem, 3vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--text-light);
+    }
+    .approach-header p {
+      font-size: 0.9rem;
+      color: var(--text-light-muted);
+      line-height: 1.75;
+      font-weight: 300;
+    }
+    .approach-section-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: rgba(230,224,216,0.3);
+      font-weight: 600;
+      margin-bottom: 2rem;
+    }
+
+    .approach-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+      margin-bottom: 5rem;
+    }
+    .approach-step {
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-dark);
+    }
+    .as-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 400;
+      color: var(--bronze-light);
+      opacity: 0.55;
+      margin-bottom: 1.25rem;
+      line-height: 1;
+    }
+    .approach-step h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-light);
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.01em;
+    }
+    .approach-step p {
+      font-size: 0.85rem;
+      color: var(--text-light-muted);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+    .as-meta {
+      margin-top: 1.25rem;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: rgba(201,146,78,0.65);
+      font-weight: 500;
+    }
+
+    .capital-note {
+      padding: 2.5rem 3rem;
+      border: 1px solid var(--border-dark);
+      border-radius: 4px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    .capital-note h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-light);
+      line-height: 1.35;
+      margin-bottom: 0.75rem;
+    }
+    .capital-note p {
+      font-size: 0.85rem;
+      color: var(--text-light-muted);
+      line-height: 1.75;
+      font-weight: 300;
+    }
+    .capital-signals {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding-top: 0.5rem;
+    }
+    .capital-signal {
+      font-size: 0.78rem;
+      color: var(--text-light-muted);
+      padding: 0.4rem 0.85rem;
+      border: 1px solid var(--border-dark);
+      border-radius: 2px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+
+    /* ─── ABOUT ─── */
+    #about {
+      background: var(--white);
+      padding: 6.5rem 0;
+      border-top: 1px solid var(--border);
+    }
+    .about-container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 3rem;
+    }
+    .about-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: start;
+    }
+    .about-text h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.9rem, 3vw, 2.5rem);
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+    }
+    .about-text p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      font-weight: 300;
+      margin-bottom: 1.1rem;
+    }
+    .about-text p:last-of-type { margin-bottom: 0; }
+    .about-text strong { color: var(--text); font-weight: 600; }
+
+    .about-pillars {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .pillar-row {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 1.25rem;
+      align-items: start;
+      padding: 1.5rem 1.75rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--white);
+      transition: background 0.2s;
+    }
+    .pillar-row:last-child { border-bottom: none; }
+    .pillar-row:hover { background: var(--pillar-hover); }
+    .pillar-n {
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+      padding-top: 4px;
+      font-weight: 500;
+    }
+    .pillar-body h4 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      letter-spacing: -0.01em;
+    }
+    .pillar-body p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      font-weight: 300;
+    }
+
+    /* ─── CONTACT ─── */
+    #contact {
+      padding: 6.5rem 0;
+      background: var(--cream);
+      border-top: 1px solid var(--border);
+    }
+    .contact-container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 3rem;
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 6rem;
+    }
+    .contact-left h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.9rem, 2.8vw, 2.5rem);
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+    }
+    .contact-left p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      font-weight: 300;
+      margin-bottom: 2rem;
+    }
+    .contact-detail {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .contact-detail a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .contact-detail a:hover { color: var(--bronze); }
+    .contact-detail span {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+
+    .contact-form { display: flex; flex-direction: column; gap: 1.25rem; }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.45rem; }
+    .form-group label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: var(--form-bg);
+      border: 1px solid var(--border-md);
+      border-radius: 3px;
+      padding: 0.7rem 0.9rem;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 400;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.2s, background 0.2s;
+      -webkit-appearance: none;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: var(--bronze); }
+    .form-group select { cursor: pointer; }
+    .form-group textarea { resize: vertical; min-height: 90px; }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: var(--text-dim); font-weight: 300; }
+
+    .form-submit { margin-top: 0.25rem; }
+    .form-submit .btn-primary { width: 100%; justify-content: center; }
+
+    .form-status {
+      display: none;
+      padding: 0.8rem 1rem;
+      border-radius: 3px;
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+    .form-status.success {
+      background: rgba(60,120,60,0.08);
+      border: 1px solid rgba(60,120,60,0.2);
+      color: #2e7d32;
+    }
+    [data-theme="dark"] .form-status.success { color: #66bb6a; }
+    .form-status.error {
+      background: rgba(180,60,60,0.07);
+      border: 1px solid rgba(180,60,60,0.2);
+      color: #b71c1c;
+    }
+    [data-theme="dark"] .form-status.error { color: #ef9a9a; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--navy);
+      color: var(--text-light);
+      padding: 2.5rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .footer-wordmark {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+    footer p {
+      font-size: 0.78rem;
+      color: var(--text-light-muted);
+    }
+
+    /* ─── SCROLL ANIMATIONS ─── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: none; }
+    .fade-in.d1 { transition-delay: 0.1s; }
+    .fade-in.d2 { transition-delay: 0.2s; }
+    .fade-in.d3 { transition-delay: 0.3s; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      nav { padding: 0 1.5rem; }
+      .nav-links { display: none; }
+      .nav-mobile-toggle { display: flex; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 68px; left: 0; right: 0;
+        background: var(--mobile-menu-bg);
+        border-bottom: 1px solid var(--border);
+        padding: 1.5rem 2rem;
+        gap: 1.25rem;
+      }
+      .nav-cta { display: none; }
+
+      #hero { padding: 8rem 1.5rem 5rem; }
+      .hero-footnote { gap: 2rem; }
+
+      .services-container, .clients-container,
+      .approach-container, .about-container,
+      .contact-container { padding: 0 1.5rem; }
+
+      .services-header { grid-template-columns: 1fr; gap: 1.5rem; }
+      .service-row { grid-template-columns: 36px 1fr; gap: 1rem; }
+      .svc-pricing { display: none; }
+      .svc-includes { display: none; }
+
+      .clients-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .approach-header { grid-template-columns: 1fr; gap: 1.5rem; }
+      .approach-steps { grid-template-columns: 1fr; gap: 2.5rem; }
+      .capital-note { grid-template-columns: 1fr; gap: 1.5rem; }
+
+      .about-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .contact-container { grid-template-columns: 1fr; gap: 3rem; }
+      .form-row-2 { grid-template-columns: 1fr; }
+
+      footer { flex-direction: column; text-align: center; padding: 2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav id="navbar">
+    <a href="#hero" class="nav-logo">
+      <span class="wordmark">Cambie</span>
+      <span class="tagline">Technical Advisory</span>
+    </a>
+    <div class="nav-right">
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#services">Services</a></li>
+        <li><a href="#clients">Who We Work With</a></li>
+        <li><a href="#approach">Approach</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact" class="nav-cta">Get in Touch</a></li>
+      </ul>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+      <div class="nav-mobile-toggle" id="mobileToggle" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section id="hero">
+    <div class="hero-overline fade-in">Technical Advisory · Capital Markets</div>
+    <h1 class="fade-in d1">
+      Capital markets systems,<br>
+      built and evaluated <em>under real conditions</em>
+    </h1>
+    <div class="hero-rule fade-in d1"></div>
+    <p class="hero-body fade-in d2">
+        Cambie advises institutions, trading firms, and founders on the
+        design, architecture, and operational integrity of capital markets
+        systems.
+        <br><br>
+        In select cases, we invest alongside the systems we understand
+        best, forming conviction through direct technical work rather than
+        external diligence.
+    </p>
+    <div class="hero-actions fade-in d2">
+      <a href="#services" class="btn-primary">
+        Our Services
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="https://calendly.com/cambie-info" target="_blank" rel="noopener noreferrer" class="btn-text">
+        Schedule a conversation
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+    <div class="hero-footnote fade-in d3">
+      <div class="fn-item">
+        <div class="fn-label">Engagements</div>
+        <div class="fn-value">Fixed-fee, project, or retainer</div>
+      </div>
+      <div class="fn-item">
+        <div class="fn-label">Capital</div>
+        <div class="fn-value">Selective co-investment</div>
+      </div>
+      <div class="fn-item">
+        <div class="fn-label">Diagnostic</div>
+        <div class="fn-value">One-week turnaround</div>
+      </div>
+      <div class="fn-item">
+        <div class="fn-label">Availability</div>
+        <div class="fn-value">Select new mandates each quarter</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section id="services">
+    <div class="services-container">
+      <div class="services-header fade-in">
+        <div>
+          <div class="section-label">Services</div>
+          <h2>Three engagement<br>models</h2>
+        </div>
+        <p>
+            Each engagement is structured around a concrete outcome:
+            identifying risk, validating system design, or bringing
+            production infrastructure to a level where it can withstand
+            real capital and real market conditions.
+        </p>
+      </div>
+
+      <div class="services-table">
+
+        <div class="service-row fade-in">
+          <div class="svc-num">I</div>
+          <div>
+            <div class="svc-title">Technical Architecture &amp; Risk Review</div>
+            <div class="svc-desc">
+                A direct assessment of your system design, financial logic, and
+                risk exposure, resulting in a written report that identifies
+                failure points, hidden assumptions, and what must be fixed before
+                capital is put at risk.
+            </div>
+          </div>
+          <ul class="svc-includes">
+            <li>System architecture and component analysis</li>
+            <li>Financial logic and pricing model review</li>
+            <li>Derivatives, risk engine, and liquidation mechanics</li>
+            <li>Operational security and attack surface assessment</li>
+            <li>Prioritised remediation roadmap</li>
+          </ul>
+          <div class="svc-pricing">
+            <div class="svc-price-main">From $10,000</div>
+            <div class="svc-price-sub">Fixed fee</div>
+          </div>
+        </div>
+
+        <div class="service-row fade-in d1">
+          <div class="svc-num">II</div>
+          <div>
+            <div class="svc-title">Trading &amp; Quantitative Infrastructure</div>
+            <div class="svc-desc">
+                Design and evaluation of the data pipelines, execution systems,
+                and risk infrastructure required to deploy and manage capital
+                in live markets, where latency, correctness, and failure modes
+                directly impact P&L.
+            </div>
+          </div>
+          <ul class="svc-includes">
+            <li>Market data ingestion and normalisation</li>
+            <li>Execution engine architecture and latency review</li>
+            <li>Backtesting and research pipeline buildout</li>
+            <li>Risk monitoring, dashboards, and alerting</li>
+            <li>Strategy deployment infrastructure</li>
+          </ul>
+          <div class="svc-pricing">
+            <div class="svc-price-main">$15,000–$50,000</div>
+            <div class="svc-price-sub">Project or $8K–$20K/mo</div>
+          </div>
+        </div>
+
+        <div class="service-row fade-in d2">
+          <div class="svc-num">III</div>
+          <div>
+            <div class="svc-title">Technical Advisory Retainer</div>
+            <div class="svc-desc">
+              Projects past the initial build stage often need a senior
+              technical mind without another full-time hire. We handle the
+              architecture decisions, vendor selection, hiring, and security oversight
+              on a monthly basis.
+            </div>
+          </div>
+          <ul class="svc-includes">
+            <li>Weekly strategy and architecture sessions</li>
+            <li>Vendor, tooling, and auditor selection</li>
+            <li>Engineering team hiring and review</li>
+            <li>Roadmap and security oversight</li>
+            <li>Direct access between sessions</li>
+          </ul>
+          <div class="svc-pricing">
+            <div class="svc-price-main">$5,000–$15,000</div>
+            <div class="svc-price-sub">Per month</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Who We Work With -->
+  <section id="clients">
+    <div class="clients-container">
+      <div class="clients-inner">
+
+        <div class="clients-left fade-in">
+          <div class="section-label">Who We Work With</div>
+          <h2>The right fit is selective by design</h2>
+          <p>
+            Our work lands hardest when something real is on the line —
+            a launch approaching, a system starting to crack under load.
+            Not a speculative conversation about something that might
+            happen eventually.
+          </p>
+          <p>
+            We work with clients in North America, the EU, Southeast Asia,
+            and the Gulf. Time zone rarely matters when the problem is
+            specific enough.
+          </p>
+          <div class="pullquote">
+            "We don't audit a system from the outside and hand back a
+            report. We think alongside your team."
+          </div>
+        </div>
+
+        <div class="fade-in d1">
+          <div class="client-list">
+            <div class="client-item">
+              <div class="ci-num">01</div>
+              <div class="ci-body">
+                <h4>Early-stage fintech companies</h4>
+                <p>Seed to Series A teams building derivatives, lending, exchange, or structured product platforms approaching their first real audit or fundraise.</p>
+              </div>
+            </div>
+            <div class="client-item">
+              <div class="ci-num">02</div>
+              <div class="ci-body">
+                <h4>Trading firms with capital but underdeveloped infrastructure</h4>
+                <p>Firms with strong strategies and deployment capital whose data, execution, or risk infrastructure has not kept pace with their growth.</p>
+              </div>
+            </div>
+            <div class="client-item">
+              <div class="ci-num">03</div>
+              <div class="ci-body">
+                <h4>Exchanges and liquidity providers</h4>
+                <p>Teams building pricing engines, market-making systems, or liquidation infrastructure that requires production-grade reliability and financial correctness.</p>
+              </div>
+            </div>
+            <div class="client-item">
+              <div class="ci-num">04</div>
+              <div class="ci-body">
+                <h4>Founders who need more than a development agency</h4>
+                <p>Venture-backed founders navigating complex architecture decisions, audit preparation, or scaling inflection points who need a technically senior co-pilot.</p>
+              </div>
+            </div>
+            <div class="client-item">
+              <div class="ci-num">05</div>
+              <div class="ci-body">
+                <h4>Institutions conducting technical diligence</h4>
+                <p>Financial institutions, fund managers, and specialist firms seeking external technical expertise on the systems they are evaluating, funding, or acquiring.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Approach (dark section) -->
+  <section id="approach">
+    <div class="approach-container">
+      <div class="approach-header fade-in">
+        <div>
+          <div class="approach-section-label">Approach</div>
+          <h2>How we structure<br>our engagements</h2>
+        </div>
+        <p>
+            We begin every relationship with a bounded, fixed-fee diagnostic 
+            to establish a clear, technical view of the system before capital,
+            time, or reputation is committed.
+        </p>
+      </div>
+
+      <div class="approach-steps">
+        <div class="approach-step fade-in">
+          <div class="as-num">01</div>
+          <h3>Diagnostic Review</h3>
+          <p>
+            We assess your architecture, financial logic, and risk profile
+            and return a written, prioritised action report. Concrete and
+            specific, not generic observations.
+          </p>
+          <div class="as-meta">Fixed fee · One week</div>
+        </div>
+        <div class="approach-step fade-in d1">
+          <div class="as-num">02</div>
+          <h3>Embedded Engagement</h3>
+          <p>
+            We work alongside your team to address the highest-priority
+            issues: system redesign, risk engine correctness, compliance
+            readiness, or infrastructure buildout.
+          </p>
+          <div class="as-meta">Project-based · Two to eight weeks</div>
+        </div>
+        <div class="approach-step fade-in d2">
+          <div class="as-num">03</div>
+          <h3>Ongoing Partnership</h3>
+          <p>
+            Continued technical judgment, architecture guidance, and hiring
+            support on a monthly basis. For select clients, we remain engaged
+            well beyond the initial mandate.
+          </p>
+          <div class="as-meta">Monthly retainer · Selective</div>
+        </div>
+      </div>
+
+      <div class="capital-note fade-in">
+        <div>
+          <h3>We invest where we have earned conviction</h3>
+          <p>
+            In a small number of cases, our advisory work leads to direct
+            capital allocation. Because we work at the level of architecture,
+            financial logic, and production systems, our conviction is formed
+            through first-hand technical understanding, as opposed to external diligence.
+            <br><br>
+            We invest from our own balance sheet, alongside founders and
+            counterparties, on a fully disclosed and independent basis.
+          </p>
+        </div>
+        <div class="capital-signals">
+          <span class="capital-signal">Technical Advisory</span>
+          <span class="capital-signal">Proprietary Capital</span>
+          <span class="capital-signal">Aligned Interests</span>
+          <span class="capital-signal">Full Disclosure</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <div class="about-container">
+      <div class="about-inner">
+
+        <div class="about-text fade-in">
+          <div class="section-label">About</div>
+          <h2>Most advisors know the code.<br>Or the market. Rarely both.</h2>
+          <p>
+            Financial systems fail at the boundaries: between code,
+            market behavior, and operational reality.
+            <strong>Cambie operates at the intersection</strong>:
+            protocol-level correctness, adversarial security thinking,
+            and real trading infrastructure experience.
+          </p>
+          <p>
+            The expensive problems live in programmable financial contracts,
+            risk engines, and execution infrastructure. Generalist agencies
+            don't know the domain well enough. Traditional auditors know
+            the domain but not the systems. There's usually no one who
+            knows both. We've built and broken things on either side.
+          </p>
+          <p>
+            We keep the client list short. Every engagement
+            teaches us something the next one benefits from: specifically,
+            how these systems fail under real pressure.
+          </p>
+          <p>
+            Over time, this work compounds into industry insight and 
+            selective capital deployment, forming the basis of a broader
+            investment strategy grounded in technical understanding rather
+            than narrative.
+          </p>
+          <div style="margin-top: 2.5rem;">
+            <a href="#contact" class="btn-primary" style="display: inline-flex;">
+              Start a conversation
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="fade-in d1">
+          <div class="about-pillars">
+            <div class="pillar-row">
+              <div class="pillar-n">I</div>
+              <div class="pillar-body">
+                <h4>Protocol Engineering</h4>
+                <p>Deep experience with programmable financial contracts, economic design, and audit-readiness across complex system architectures.</p>
+              </div>
+            </div>
+            <div class="pillar-row">
+              <div class="pillar-n">II</div>
+              <div class="pillar-body">
+                <h4>Trading Infrastructure</h4>
+                <p>Systems thinking from latency-sensitive execution environments: market data pipelines, execution engines, and the operational demands of live markets.</p>
+              </div>
+            </div>
+            <div class="pillar-row">
+              <div class="pillar-n">III</div>
+              <div class="pillar-body">
+                <h4>Financial Logic</h4>
+                <p>Derivatives pricing, funding mechanics, liquidation design, and risk parameters. The mathematics and edge cases that break systems under real market stress.</p>
+              </div>
+            </div>
+            <div class="pillar-row">
+              <div class="pillar-n">IV</div>
+              <div class="pillar-body">
+                <h4>Capital Markets Perspective</h4>
+                <p>Every system is evaluated through the dual frame of technical correctness and adversarial market reality. Both matter equally, and most advisors only see one.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="contact-container">
+
+      <div class="contact-left fade-in">
+        <div class="section-label">Contact</div>
+        <h2>Begin with a conversation</h2>
+        <p>
+          We take on a small number of new engagements each quarter.
+          Tell us what you're building and where you're stuck. We'll
+          respond within one business day.
+        </p>
+        <div class="contact-detail">
+          <span>Direct</span>
+          <a href="mailto:info@cambie.xyz">info@cambie.xyz</a>
+        </div>
+        <div style="margin-top: 1.75rem;" class="contact-detail">
+          <span>Website</span>
+          <a href="https://cambie.xyz">cambie.xyz</a>
+        </div>
+      </div>
+
+      <div class="fade-in d1">
+        <form class="contact-form" id="contactForm" novalidate>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input type="text" id="firstName" name="firstName" placeholder="Given name" required>
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input type="text" id="lastName" name="lastName" placeholder="Surname" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="your@organisation.com" required>
+          </div>
+          <div class="form-group">
+            <label for="company">Organisation</label>
+            <input type="text" id="company" name="company" placeholder="Firm or project name">
+          </div>
+          <div class="form-group">
+            <label for="engagement">Engagement Type</label>
+            <select id="engagement" name="engagement" required>
+              <option value="" disabled selected>Select an engagement type</option>
+              <option value="architecture-review">Architecture &amp; Risk Review</option>
+              <option value="trading-infra">Trading &amp; Quantitative Infrastructure</option>
+              <option value="retainer">Technical Advisory Retainer</option>
+              <option value="other">Other / Not yet determined</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message">Describe your situation</label>
+            <textarea id="message" name="message" placeholder="What are you building? What is the core challenge? Is there a timeline?" required></textarea>
+          </div>
+          <div class="form-submit">
+            <button type="submit" class="btn-primary" id="submitBtn">
+              Send Message
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <div class="form-status" id="formStatus"></div>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-wordmark">Cambie</span>
+    <p>Technical Advisory for Financial Infrastructure</p>
+    <p>&copy; 2026 Cambie Ventures &nbsp;·&nbsp; info@cambie.xyz</p>
+  </footer>
+
+  <script>
+    // ── Theme (init already ran in <head>) ────────────────────────────────
+    const html = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+
+    themeToggle.addEventListener('click', () => {
+      const dark = html.getAttribute('data-theme') !== 'dark';
+      html.setAttribute('data-theme', dark ? 'dark' : 'light');
+      localStorage.setItem('cambie-theme', dark ? 'dark' : 'light');
+    });
+
+    // Track system changes only when user has no saved preference
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+      if (!localStorage.getItem('cambie-theme'))
+        html.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+    });
+
+    // ── Nav scroll ────────────────────────────────────────────────────────
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 24);
+    }, { passive: true });
+
+    // ── Mobile menu ───────────────────────────────────────────────────────
+    const toggle = document.getElementById('mobileToggle');
+    const navLinks = document.getElementById('navLinks');
+    toggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+    navLinks.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+
+    // ── Smooth anchor scroll ──────────────────────────────────────────────
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (!target) return;
+        e.preventDefault();
+        const top = target.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top, behavior: 'smooth' });
+      });
+    });
+
+    // ── Scroll fade-in ────────────────────────────────────────────────────
+    const fadeEls = document.querySelectorAll('.fade-in');
+    const revealAll = () => fadeEls.forEach(el => el.classList.add('visible'));
+
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+        });
+      }, { threshold: 0, rootMargin: '0px' });
+      fadeEls.forEach(el => io.observe(el));
+      // Fallback: sandboxed iframes / viewers may never fire IO - reveal after 800ms
+      setTimeout(revealAll, 800);
+    } else {
+      revealAll();
+    }
+
+    // ── Contact form ──────────────────────────────────────────────────────
+    const form = document.getElementById('contactForm');
+    const formStatus = document.getElementById('formStatus');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+
+      const originalHTML = submitBtn.innerHTML;
+      submitBtn.textContent = 'Sending…';
+      submitBtn.disabled = true;
+
+      try {
+        const res = await fetch('https://formspree.io/f/xpqkgzqb', {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: new FormData(form)
+        });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || 'Submission failed');
+        }
+        formStatus.textContent = 'Thank you. We will be in touch within 3 business days.';
+        formStatus.className = 'form-status success';
+        formStatus.style.display = 'block';
+        form.reset();
+      } catch {
+        formStatus.textContent = 'Something went wrong. Please email info@cambie.xyz directly.';
+        formStatus.className = 'form-status error';
+        formStatus.style.display = 'block';
+      } finally {
+        submitBtn.innerHTML = originalHTML;
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+
+</body>
+</html>

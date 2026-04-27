@@ -1,7 +1,8 @@
 # Cambie — cambie.xyz
 
 Static marketing site for [Cambie](https://cambie.xyz), hosted on Firebase Hosting.
-Single self-contained HTML file — no build step, no dependencies, no node_modules.
+Single self-contained HTML file. Minification runs in CI — the repo always contains
+readable source.
 
 ---
 
@@ -10,10 +11,12 @@ Single self-contained HTML file — no build step, no dependencies, no node_modu
 ```
 cambie-web/
 ├── public/
-│   └── index.html          ← entire site (HTML + CSS + JS, self-contained)
+│   ├── index.html          ← entire site (HTML + CSS + JS, readable source)
+│   └── og.jpg              ← 1200×630 social preview image
 ├── .github/
 │   └── workflows/
-│       └── deploy.yml      ← auto-deploy on push to main
+│       └── deploy.yml      ← auto-deploy on push to main (minifies in CI)
+├── package.json            ← dev scripts (preview, deploy)
 ├── firebase.json           ← Firebase Hosting config
 ├── .firebaserc             ← Firebase project alias (project: cambie-web)
 └── .gitignore
@@ -21,175 +24,94 @@ cambie-web/
 
 ---
 
-## Local Preview
+## Editing the site
 
-No server required — just open the file directly:
+Always edit `public/index.html` — it is the readable source and is what lives in
+the repo. **Do not manually minify it.** Minification happens automatically in CI
+before each deploy; the minified version never touches the repo.
 
-```bash
-open public/index.html
-```
-
-Or use the Firebase local emulator for a closer-to-production preview:
+**Preview locally:**
 
 ```bash
-npm install -g firebase-tools   # if not already installed
-firebase serve --only hosting
-# → http://localhost:5000
+open public/index.html          # instant, no server needed
+
+# or with the Firebase emulator (closer to production):
+npm install                     # first time only
+npm run preview                 # → http://localhost:5000
 ```
 
----
-
-## Before You Deploy
-
-### 1. Wire up the contact form
-
-The form currently simulates a successful submission. To make it live, sign up at
-[formspree.io](https://formspree.io), create a form, and replace the commented-out
-block in `index.html`:
-
-```js
-// Find this block near the bottom of the <script> tag:
-// await fetch('https://formspree.io/f/YOUR_ID', {
-//   method: 'POST', headers: { 'Accept': 'application/json' },
-//   body: new FormData(form)
-// });
-
-// Replace with (uncomment and fill in your ID):
-const res = await fetch('https://formspree.io/f/YOUR_ID', {
-  method: 'POST',
-  headers: { 'Accept': 'application/json' },
-  body: new FormData(form)
-});
-if (!res.ok) throw new Error('Form submission failed');
-```
-
-Free Formspree tier: 50 submissions/month. Paid tiers start at $10/mo.
-
-### 2. OG social image (optional but recommended)
-
-Currently there is no `og:image` meta tag. For proper link previews on LinkedIn,
-Slack, iMessage etc., create a `1200×630px` image, upload it to Firebase Storage
-or a CDN, and add to `<head>`:
-
-```html
-<meta property="og:image" content="https://cambie.xyz/og-image.jpg">
-<meta name="twitter:image" content="https://cambie.xyz/og-image.jpg">
-<meta name="twitter:card" content="summary_large_image">
-```
-
-### 3. Analytics (optional)
-
-Firebase Analytics is already included in firebase.json rewrites. To enable,
-add the Firebase SDK snippet to `index.html` or use Firebase's built-in
-Hosting analytics dashboard at console.firebase.google.com.
-
----
-
-## Minification
-
-The site is a single HTML file — minify everything in one pass:
+**Deploy:**
 
 ```bash
-# Install once
-npm install -g html-minifier-terser
-
-# Minify (output to a separate file, then swap)
-html-minifier-terser \
-  --collapse-whitespace \
-  --remove-comments \
-  --remove-redundant-attributes \
-  --minify-css true \
-  --minify-js true \
-  public/index.html -o public/index.html
+git add .
+git commit -m "your message"
+git push                        # GitHub Action minifies and deploys automatically
 ```
-
-> Tip: Run minification right before committing the deploy commit. The inline
-> theme script, noscript tag, and SVG favicon are all written to survive
-> minification without changes.
-
----
-
-## Manual Deploy
-
-```bash
-# 1. Make sure you're logged in
-firebase login
-
-# 2. Deploy (Hosting only — skip Functions, Firestore, etc.)
-firebase deploy --only hosting
-```
-
-That's it. Firebase will print the live URL when done.
 
 ---
 
 ## Automated Deploy (GitHub Actions)
 
-Every push to `main` triggers `.github/workflows/deploy.yml`, which deploys
-directly to Firebase Hosting. **This is free** — GitHub Actions gives 2,000
-free minutes/month on private repos (unlimited on public repos), and Firebase
-Hosting's Spark plan has no cost for static hosting.
+Every push to `main` triggers `.github/workflows/deploy.yml`:
 
-### One-time setup
+```
+checkout readable source
+  → minify HTML/CSS/JS in CI runner
+    → firebase deploy --only hosting (using FIREBASE_TOKEN secret)
+```
 
-The easiest path is to let the Firebase CLI handle everything automatically:
+**This is free.** GitHub Actions gives 2,000 free minutes/month on private repos
+(unlimited on public), and Firebase Hosting's Spark plan has no cost for static sites.
+
+### GitHub secret required
+
+The workflow authenticates using a Firebase CI token stored as a GitHub secret.
+This was set up using `firebase login:ci`. If the token ever expires or needs to
+be rotated:
 
 ```bash
-# From the cambie-web directory
-firebase init hosting:github
+firebase login:ci               # prints a new token
 ```
 
-This command will:
-1. Ask which GitHub repo to connect
-2. Create a Firebase service account automatically
-3. Store the secret in your GitHub repo as `FIREBASE_SERVICE_ACCOUNT_CAMBIE_WEB`
-4. Generate (or confirm) the workflow file
+Then update it in GitHub: repo → **Settings → Secrets and variables → Actions →
+`FIREBASE_TOKEN`** → update value.
 
-If you prefer to do it manually:
+### Manual deploy (bypassing CI)
 
-1. Go to [Google Cloud Console](https://console.cloud.google.com) → IAM & Admin → Service Accounts
-2. Create a service account with the **Firebase Hosting Admin** role
-3. Generate a JSON key
-4. In your GitHub repo: Settings → Secrets → Actions → New repository secret
-   - Name: `FIREBASE_SERVICE_ACCOUNT_CAMBIE_WEB`
-   - Value: paste the entire contents of the JSON key file
-5. Push to `main` — the action will run automatically
-
-### What the action does
-
+```bash
+firebase login                  # if credentials have expired: firebase login --reauth
+firebase deploy --only hosting
 ```
-push to main
-  → checkout code
-  → authenticate with Firebase using the service account secret
-  → run firebase deploy --only hosting
-  → post deploy status as a GitHub commit check
-```
-
-Preview channels (optional): the action also supports deploying PRs to temporary
-preview URLs. See [FirebaseExtended/action-hosting-deploy](https://github.com/FirebaseExtended/action-hosting-deploy)
-for docs.
 
 ---
 
 ## Firebase Notes
 
 - **Project ID**: `cambie-web` (set in `.firebaserc`)
-- **Hosting config**: `public/` directory is served; `firebase.json`, dotfiles,
-  and `node_modules` are excluded from deploys
-- **SPA rewrite**: all routes rewrite to `index.html` — safe to keep even for
-  a single-page site
-- **Free tier (Spark plan)** includes: 10 GB storage, 360 MB/day transfer,
-  custom domain, SSL — more than enough for this site
-- **Custom domain** (`cambie.xyz`): add it in Firebase Console → Hosting →
-  Add custom domain, then update your DNS with the provided records (usually
-  takes < 1 hour to propagate)
+- **Hosting config**: only the `public/` directory is served; `firebase.json`,
+  dotfiles, and `node_modules` are excluded
+- **SPA rewrite**: all routes resolve to `index.html` — correct for a single-page site
+- **Free tier (Spark plan)**: 10 GB storage, 360 MB/day transfer, custom domain, SSL
+- **Custom domain** (`cambie.xyz`): Firebase Console → Hosting → Add custom domain
+  → follow the DNS instructions (usually live within an hour)
+
+---
+
+## Integrations
+
+| Service | Status | Detail |
+|---|---|---|
+| Formspree (contact form) | ✅ Live | `https://formspree.io/f/xpqkgzqb` — submissions go to Formspree dashboard |
+| Calendly | ✅ Live | "Schedule a conversation" → `https://calendly.com/cambie-info/30min` |
+| OG / social image | ✅ Live | `public/og.jpg` + meta tags pointing to `https://cambie.xyz/og.jpg` |
+| GitHub Actions deploy | ✅ Live | Triggers on push to `main`, uses `FIREBASE_TOKEN` secret |
+| Custom domain | ✅ Live | `cambie.xyz` connected in Firebase Console |
+| Email (`info@cambie.xyz`) | ✅ Fine as-is | Formspree notifies you of submissions; reply manually from any inbox for now |
 
 ---
 
 ## Remaining TODOs
 
-- [x] Wire up Formspree (`https://formspree.io/f/xpqkgzqb`)
-- [ ] Add `og:image` for social link previews (see above)
-- [ ] Connect custom domain `cambie.xyz` in Firebase Console
-- [ ] Run `firebase init hosting:github` once to link GitHub Actions
-- [x] Calendly — "Schedule a conversation" → `https://calendly.com/cambie-info/30min`
+- [ ] **OG preview test**: Paste `cambie.xyz` into [opengraph.xyz](https://www.opengraph.xyz) to confirm social previews render correctly on LinkedIn, Slack, iMessage
+- [ ] **Email routing** (when needed): Forward `info@cambie.xyz` to your inbox via [Cloudflare Email Routing](https://developers.cloudflare.com/email-routing/) (free) — only worth doing once volume picks up or you want a cleaner reply-from address
+- [ ] **Analytics**: Optional — once there is traffic worth measuring (Fathom or Plausible are good privacy-friendly options)

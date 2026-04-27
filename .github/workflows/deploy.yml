@@ -12,6 +12,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Minify HTML
+        run: npx html-minifier-terser --collapse-whitespace --remove-comments --remove-redundant-attributes --minify-css true --minify-js true public/index.html -o public/index.html
+
       - name: Deploy to Firebase Hosting
         run: npx firebase-tools deploy --only hosting --token "$FIREBASE_TOKEN" --project cambie-web --non-interactive
         env:

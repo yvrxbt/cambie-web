@@ -1,0 +1,12 @@
+{
+  "name": "cambie-web",
+  "private": true,
+  "scripts": {
+    "preview": "firebase serve --only hosting",
+    "deploy": "firebase deploy --only hosting",
+    "deploy:minified": "npx html-minifier-terser --collapse-whitespace --remove-comments --remove-redundant-attributes --minify-css true --minify-js true public/index.html -o public/index.html && firebase deploy --only hosting"
+  },
+  "devDependencies": {
+    "html-minifier-terser": "^7.2.0"
+  }
+}
